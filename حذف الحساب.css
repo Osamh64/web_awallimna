@@ -1,0 +1,176 @@
+/* تنسيق عام للصفحة */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+header .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header .logo-link {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+form {
+    width: 100%;
+}
+
+/* تنسيق الصفوف */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* تنسيق الخانات */
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* زر الإرسال */
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049; 
+}
+
+/* تنسيق الفوتر */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem; 
+}
+
+footer a {
+    color: #4CAF50; 
+    text-decoration: none; 
+    margin: 0 0.5rem; 
+}
+
+footer a:hover {
+    text-decoration: underline; 
+}
+
+/* تنسيق زر حفظ للقراءة لاحقاً */
+.save-for-later {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.save-for-later:hover {
+    background-color: #1976D2;
+}
+
+.save-for-later i {
+    font-size: 1.1rem;
+}
+
+/* تنسيق رسالة تأكيد الحفظ */
+.save-confirmation {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000;
+}
+
+.save-confirmation.show {
+    display: block;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column; 
+    }
+
+    .form-group {
+        width: 100%; 
+    }
+
+    header .header-content {
+        flex-direction: column; 
+        align-items: center; 
+    }
+}
