@@ -12,14 +12,14 @@
   <body>
     <h1>
       <div class="location" style="text-align: center;">
-        <a href="الموقع.html" style="text-decoration: none; color: inherit;">
+        <a href="الموقع.php" style="text-decoration: none; color: inherit;">
             <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
             <h1 style="display: inline; margin: 0;">عوالمنا</h1>
         </a>
     </div>
   <div class="container">
     <h1>تسجيل الدخول</h1>
-    <form action="login.html" method="post">
+    <form action="login.php" method="post">
       <label for="username">اسم المستخدم:</label>
       <input type="text" id="username" name="username" placeholder="أدخل اسم المستخدم">
       <label for="password">كلمة المرور:</label>
@@ -27,10 +27,10 @@
       <input type="submit" value="تسجيل الدخول">
     </form>
     <p>
-      <a href="نسيت كلمة سر.html">نسيت كلمة المرور؟</a>
+      <a href="نسيت كلمة سر.php">نسيت كلمة المرور؟</a>
     </p>
     <div class="container1">
-      <p>ليس لديك حساب؟ <a href="انشاء حساب.html">سجل هنا</a></p>
+      <p>ليس لديك حساب؟ <a href="انشاء حساب.php">سجل هنا</a></p>
     </div>
   </div>
   <footer>

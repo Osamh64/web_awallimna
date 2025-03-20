@@ -105,7 +105,7 @@
 <body>
     <header>
         <div class="location">
-            <a href="الموقع.html" style="text-decoration: none;">
+            <a href="الموقع.php" style="text-decoration: none;">
                 <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
                 <h1>عوالمنا</h1>
             </a>

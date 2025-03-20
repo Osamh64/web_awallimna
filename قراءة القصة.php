@@ -1,85 +1,95 @@
 <?php
-// بيانات القصص (يمكن استبدالها بقراءة من ملف JSON أو قاعدة بيانات)
-$stories = [
-    'story1' => [
-        'title' => 'القصة الأولى',
-        'author' => 'محمد أحمد',
-        'content' => 'هذه هي محتوى القصة الأولى...'
-    ],
-    'story2' => [
-        'title' => 'القصة الثانية',
-        'author' => 'فاطمة علي',
-        'content' => 'هذه هي محتوى القصة الثانية...'
-    ],
-    // يمكن إضافة المزيد من القصص هنا
-];
+// فعّل عرض الأخطاء
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// الحصول على القصة المختارة من query string
-$selectedStory = $_GET['story'] ?? null;
-
-// بيانات القصة المختارة
-$storyData = $stories[$selectedStory] ?? null;
+// حدد مسار الملف
+$storyPath = "القصص/القصص المنشوره/قصة العنقاء.pdf";
 ?>
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عوالمنا</title>
-    <link rel="icon" href="Website.jpg">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <title>عرض القصة</title>
+    
+    <!-- أكواد CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        #book {
+            width: 90%;
+            max-width: 800px;
+            height: 600px;
+            margin: 0 auto;
+            perspective: 2000px;
+        }
+        .page {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #pageSound {
+            display: none;
+        }
+    </style>
+
+    <!-- مكتبات خارجية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
 </head>
 <body>
-<header>
-    <h1>
-        <div class="location">
-            <a href="الموقع.html">
-                <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
-                <sup style="text-decoration: none;">عوالمنا</sup>
-            </a>
-        </div>
-        <div class="User">
-            <a href="تسجيل دخول.html">تسجيل دخول</a> /
-            <a href="انشاء حساب.html">انشاء حساب</a>
-        </div>
-    </h1>
-</header>
-<br><br><br><br><br>
-<div>
-    <button id="text-big">تكبير الخط</button>
-    <button id="text-small">تصغير الخط</button>
-</div>
-<div>
-    <!-- عرض اسم القصة ومؤلفها ومحتواها -->
-    <p id="story-title" style="text-align: center;"><?php echo $storyData['title'] ?? 'اسم القصة غير متوفر'; ?></p>
-    <h3 id="story-author">مؤلف القصة: <?php echo $storyData['author'] ?? 'غير معروف'; ?></h3>
-    <br><br>
-    <article id="story-content">
-        <?php echo $storyData['content'] ?? 'لم يتم العثور على محتوى القصة.'; ?>
-    </article>
-    <br>
-    <!-- زر الإبلاغ -->
-    <button id="report-button" onclick="reportStory()">الإبلاغ عن مشكلة</button>
-</div>
+    <header>
+        <h1>عنوان القصة</h1>
+    </header>
 
-<!-- JavaScript لتكبير وتصغير الخط -->
-<script>
-    function changeFontSize(size) {
-        const content = document.getElementById('story-content');
-        const currentSize = window.getComputedStyle(content, null).getPropertyValue('font-size');
-        const newSize = parseFloat(currentSize) + size + 'px';
-        content.style.fontSize = newSize;
-    }
+    <div id="book"></div>
+    <audio id="pageSound" src="page-flip.mp3"></audio>
 
-    document.getElementById('text-big').addEventListener('click', () => changeFontSize(2));
-    document.getElementById('text-small').addEventListener('click', () => changeFontSize(-2));
+    <!-- أكواد JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // تهيئة الكتاب
+            const book = $('#book').turn({
+                width: 800,
+                height: 600,
+                autoCenter: true,
+                gradients: true,
+                duration: 1000
+            });
 
-    function reportStory() {
-        const storyTitle = document.getElementById('story-title').innerText;
-        alert(`تم الإبلاغ عن مشكلة في القصة: ${storyTitle}`);
-    }
-</script>
+            // تحميل ملف PDF
+            pdfjsLib.getDocument("<?php echo $storyPath; ?>").promise.then(pdf => {
+                const totalPages = pdf.numPages;
+
+                // تحميل كل صفحة
+                for(let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+                    pdf.getPage(pageNumber).then(page => {
+                        const viewport = page.getViewport({ scale: 1.5 });
+                        const canvas = document.createElement('canvas');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        // إضافة الصفحة للكتاب
+                        $('#book').turn('addPage', canvas);
+
+                        // رسم محتوى الصفحة
+                        page.render({
+                            canvasContext: canvas.getContext('2d'),
+                            viewport: viewport
+                        });
+                    });
+                }
+            });
+
+            // تشغيل الصوت عند التصفح
+            $('#book').on('turning', function() {
+                document.getElementById('pageSound').play();
+            });
+        });
+    </script>
 </body>
 </html>

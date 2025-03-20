@@ -41,7 +41,7 @@
 <body>
     <header>
         <div class="location" style="text-align: center;">
-            <a href="الموقع.html" style="text-decoration: none; color: inherit;">
+            <a href="الموقع.php" style="text-decoration: none; color: inherit;">
                 <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
                 <h1 style="display: inline; margin: 0;">عوالمنا - الصفحة غير موجودة</h1>
             </a>

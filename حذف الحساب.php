@@ -32,7 +32,7 @@
         <textarea id="additional_info" name="additional_info" rows="4" cols="50"></textarea><br><br>
         
         <button type="submit" name="action" value="freeze">تجميد</button>
-        <button type="submit" name="action" value="delete" href="code My location/تم الحذف.html">حذف حساب نهائي</button>
+        <button type="submit" name="action" value="delete" href="code My location/تم الحذف.php">حذف حساب نهائي</button>
     </form>
 </body>
 </html>

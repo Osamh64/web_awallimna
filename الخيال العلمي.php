@@ -17,19 +17,19 @@ include 'header.php';
 
         <div class="category-box">
             <ul>
-                <li><a href="الكوميديا.html" class="category-title">كوميديا</a></li>
-                <li><a href="الخيال العلمي.html" class="category-title">خيال علمي</a></li>
-                <li><a href="الخيال.html" class="category-title">خيال</a></li>
-                <li><a href="الرومانسية.html" class="category-title">الرومانسي</a></li>
-                <li><a href="الجريمة والتحقيق.html" class="category-title">جريمة وتحقيق</a></li>
-                <li><a href="الرعب.html" class="category-title">الرعب</a></li>
-                <li><a href="المغامرة.html" class="category-title">مغامرة</a></li>
-                <li><a href="دراما.html" class="category-title">دراما</a></li>
-                <li><a href="التاريخية.html" class="category-title">تاريخي</a></li>
-                <li><a href="سرقة.html" class="category-title">سرقة</a></li>
-                <li><a href="حرب.html" class="category-title">حرب</a></li>
-                <li><a href="الفانتازي.html"class="category-title">فانتازي</a></li>
-                <li><a href="اطفال.html"class="category-title">اطفال</a></li>
+                <li><a href="الكوميديا.php" class="category-title">كوميديا</a></li>
+                <li><a href="الخيال العلمي.php" class="category-title">خيال علمي</a></li>
+                <li><a href="الخيال.php" class="category-title">خيال</a></li>
+                <li><a href="الرومانسية.php" class="category-title">الرومانسي</a></li>
+                <li><a href="الجريمة والتحقيق.php" class="category-title">جريمة وتحقيق</a></li>
+                <li><a href="الرعب.php" class="category-title">الرعب</a></li>
+                <li><a href="المغامرة.php" class="category-title">مغامرة</a></li>
+                <li><a href="دراما.php" class="category-title">دراما</a></li>
+                <li><a href="التاريخية.php" class="category-title">تاريخي</a></li>
+                <li><a href="سرقة.php" class="category-title">سرقة</a></li>
+                <li><a href="حرب.php" class="category-title">حرب</a></li>
+                <li><a href="الفانتازي.php"class="category-title">فانتازي</a></li>
+                <li><a href="اطفال.php"class="category-title">اطفال</a></li>
             </ul>
         </div>
         <h2 class="new_story">أحدث القصص</h2>

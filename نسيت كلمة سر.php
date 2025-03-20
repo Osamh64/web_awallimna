@@ -101,7 +101,7 @@
 <body>
     <header>
         <div class="header-left">
-            <a href="الموقع.html">
+            <a href="الموقع.php">
                 <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
     <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -116,7 +116,7 @@
     <!--  رابط مع قاعدة البيانات الي اسمه قاعدة البيانات.sql  -->
     <header>
         <div class="location">
-            <a href="الموقع.html">
+            <a href="الموقع.php">
                 <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
                 <h1>عوالمنا</h1>
             </a>

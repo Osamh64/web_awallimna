@@ -12,7 +12,7 @@
     <header>
         <div class="header-container">
             <div class="header-left">
-                <a href="الموقع.html">
+                <a href="الموقع.php">
                     <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
                 </a>
             </div>

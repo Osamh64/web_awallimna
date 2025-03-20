@@ -1,10 +1,44 @@
+<?php
+// يجب بدء الجلسة في الأعلى قبل أي إخراج لتجنب أخطاء الهيدر
+session_start();
+
+// دالة استخراج اسم المستخدم من التوكن
+function getUserNameFromToken(string $token): string
+{
+    // هنا يجب استخدام مكتبة JWT أو طريقة آمنة لفك التشفير
+    // هذا مثال افتراضي فقط
+    return 'Guest';
+}
+
+function users() {
+    if (isset($_SESSION['user_token'])) {
+        // استخراج اسم المستخدم من التوكن
+        $user_name = getUserNameFromToken($_SESSION['user_token']);
+        ?>
+        <div class="header-right">
+            <!-- ترحيب آمن مع تهريب XSS -->
+            <a href="تسجيل دخول.php">تسجيل دخول <?= htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8') ?></a>
+            <a href="انشاء حساب.php">انشاء حساب</a>
+        </div>
+        <?php
+    } else {
+        ?>
+        <div class="header-right">
+            <a href="تسجيل دخول.php">تسجيل دخول</a>
+            <a href="انشاء حساب.php">انشاء حساب</a>
+        </div>
+        <?php
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عوالمنا</title>
-    <link rel="icon" href="Website.jpg">
+    <link rel="icon" href="website.jpg"> <!-- تصحيح اسم الأيقونة ليكون متناسقًا -->
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <meta name="description" content="اكتشف عوالمًا لا حدود لها من الخيال والإبداع على موقعنا، حيث يلتقي الكتّاب والقرّاء ليشاركوا قصصهم ورواياتهم في مساحة آمنة وملهمة.">
@@ -14,47 +48,15 @@
     <header>
         <div class="location" style="text-align: center;">
             <a href="الموقع.php" style="text-decoration: none; color: inherit;">
-                <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
+                <!-- تصحيح النص البديل للصورة -->
+                <img src="website.jpg" alt="شعار الموقع" height="50" width="50">
                 <h1 style="display: inline; margin: 0;">عوالمنا</h1>
             </a>
         </div>
-    
-        <?php
-        function users() {
-            // التحقق إذا كان التوكن موجودًا (يفترض أن التوكن يتم تخزينه في الجلسة)
-            if (isset($_SESSION['user_token'])) {  // التوكن مخزن في الجلسة
-                // استخراج اسم المستخدم من التوكن (افترض أنه يمكن استخراج البيانات من التوكن)
-                $user_name = getUserNameFromToken($_SESSION['user_token']);
-                
-                // إذا كان التوكن صالحًا، عرض اسم المستخدم ورابط الخروج
-                echo '<div class="header-right">';
-                echo '<a href="حساب.php">مرحباً، ' . htmlspecialchars($user_name) . '</a>';
-                echo '<a href="تسجيل خروج.php">تسجيل خروج</a>';
-                echo '</div>';
-            } else {
-                // إذا لم يكن هناك توكن (أي لم يسجل الدخول بعد)
-                echo '<div class="header-right">';
-                echo '<a href="تسجيل دخول.php">تسجيل دخول</a>';
-                echo '<a href="انشاء حساب.php">انشاء حساب</a>';
-                echo '</div>';
-            }
-        }
-        
-            // دالة لاستخراج اسم المستخدم من التوكن (هذه دالة توضيحية وقد تحتاج لتعديل حسب نوع التوكن)
-            function getUserNameFromToken($token) {
-                // هنا يمكن أن تستخدم مكتبة JWT أو أي طريقة لاستخراج بيانات المستخدم من التوكن
-                // مثال توضيحي فقط، يجب عليك معالجة التوكن بشكل آمن
-                // return some_decoded_token['username'];
-            
-                // على سبيل المثال:
-                return 'اسم المستخدم من التوكن';
-            }
-            
-            session_start();  // بدء الجلسة
-            users();  // تنفيذ الدالة
-            ?>
+        <?php users(); ?> <!-- استدعاء الدالة بعد التهيئة الصحيحة -->
     </header>
     <main>
+        <br>
         <div class="category-box">
             <ul>
                 <li><a href="الكوميديا.php" class="category_title">كوميديا</a></li>
@@ -68,8 +70,8 @@
                 <li><a href="التاريخية.php" class="category_title">تاريخي</a></li>
                 <li><a href="سرقة.php" class="category_title">سرقة</a></li>
                 <li><a href="حرب.php" class="category_title">حرب</a></li>
-                <li><a href="الفانتازي.php"class="category_title">فانتازي</a></li>
-                <li><a href="اطفال.php"class="category_title">اطفال</a></li>
+                <li><a href="الفانتازي.php" class="category_title">فانتازي</a></li>
+                <li><a href="اطفال.php" class="category_title">اطفال</a></li>
             </ul>
         </div>
         <h2 class="new_story">أحدث القصص</h2>
@@ -79,13 +81,3 @@
     </footer>
 </body>
 </html>
-
-<?php
-$myarray = array (
-    "Saudi Arabic" => 966,
-    "Kueait" => 965
-);
-foreach($myarray as $key => $value){
-    echo $Key . ":" . $value . "\n";
-} 
-?> 

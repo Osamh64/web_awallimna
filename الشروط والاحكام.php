@@ -12,7 +12,7 @@
 <body>
     <header>
         <div class="location" style="text-align: center;">
-            <a href="الموقع.html" style="text-decoration: none; color: inherit;">
+            <a href="الموقع.php" style="text-decoration: none; color: inherit;">
                 <img src="Website.jpg" alt="صورة الموقع" height="50" width="50">
                 <h1 style="display: inline; margin: 0;">عوالمنا</h1>
             </a>
@@ -35,6 +35,7 @@
             <li>إذا كان لديك أي استفسارات حول هذه الشروط والأحكام، يمكنك الاتصال بنا عبر قنوات التواصل.</li>
             <li>التعديل يكون قبل النشر، وتعديل الترجمة يكون قبل أو بعد النشر.</li>
             <li>الكذب بالبيانات يعرض الحساب الى عقوبه قد تصل الى تقيد الحساب او حذفه</li>
+            <li>نشر قصة تم سرقتها في حساب يعرض الحساب الى عقوبه قد تصل الى تقيد الحساب او حذفه</li>
         </ol>
     </div>
     <footer>
