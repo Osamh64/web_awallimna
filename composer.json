@@ -1,0 +1,17 @@
+{
+    "name": "osamh/awallimna",
+    "autoload": {
+        "psr-4": {
+            "Osamh\\Awallimna\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "osama",
+            "email": "osamh123451191@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

@@ -14,12 +14,6 @@ function randomPassword() {
     return $password;
 }
 
-// معالجة توليد كلمة المرور عبر AJAX
-if (isset($_GET['generate_password'])) {
-    echo randomPassword();
-    exit;
-}
-
 // اتصال قاعدة البيانات
 $servername = "localhost";
 $username = "root";
@@ -47,15 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = '';
     if (!empty($email_input)) {
         if (strpos($email_input, '@') !== false) {
-            // بريد كامل
             $email = filter_var($email_input, FILTER_VALIDATE_EMAIL) ? $email_input : '';
         } else {
-            // بريد بدون نطاق
             if (!empty($selected_domain)) {
                 $email = $email_input . '@' . $selected_domain;
                 $email = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : '';
-            } else {
-                $email = '';
             }
         }
     }
@@ -72,11 +62,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO `centers` 
-            (owner_name, center_name, email, password, center_address, employee_accounts, email_type) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssis", $owner_name, $center_name, $email, $hashed_password, $center_address, $employee_accounts, $email_type);
+        $subscription_id = 'SUB_' . uniqid();
         
+        $stmt = $conn->prepare("
+            INSERT INTO subscription 
+            (id, owner_name, center_name, base_email, password, center_address, 
+             employee_accounts, email_type, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        ");
+        $stmt->bind_param("ssssssis", $subscription_id, $owner_name, $center_name, 
+                         $email, $hashed_password, $center_address, 
+                         $employee_accounts, $email_type);
+
         if ($stmt->execute()) {
             echo "<div class='alert success'>تم حفظ البيانات بنجاح</div>";
         } else {
@@ -89,8 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -188,8 +185,7 @@ $conn->close();
             cursor: pointer;
             font-size: 18px;
             transition: background 0.3s;
-        }
-    </style>
+        }   </style>
 </head>
 <body>
     <header>
@@ -231,20 +227,20 @@ $conn->close();
                 </div>
             </div>
             <div id="password" class="form-group">
-                    <label>كلمة المرور:</label>
-                    <input type="password" 
-                           name="password" 
-                           id="passwordField"
-                           required 
-                           minlength="25"
-                           maxlength="25"
-                           placeholder="انقر لتوليد كلمة مرور"
-                           pattern=".{25}"
-                           title="يجب أن تكون 25 حرفًا بالضبط">
-                    <div id="passwordOptions" style="display: none; margin-top: 10px;">
-                        <button type="button" onclick="generateNewPassword()">توليد كلمة مرور عشوائية</button>
-                    </div>
+                <label>كلمة المرور:</label>
+                <input type="password" 
+                       name="password" 
+                       id="passwordField"
+                       required 
+                       minlength="25"
+                       maxlength="25"
+                       placeholder="انقر لتوليد كلمة مرور"
+                       pattern=".{25}"
+                       title="يجب أن تكون 25 حرفًا بالضبط">
+                <div id="passwordOptions" style="display: none; margin-top: 10px;">
+                    <button type="button" onclick="generateNewPassword()">توليد كلمة مرور عشوائية</button>
                 </div>
+            </div>
             <div class="form-group">
                 <label>تأكيد كلمة المرور:</label>
                 <input type="password" 

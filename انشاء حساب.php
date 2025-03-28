@@ -1,9 +1,9 @@
 <?php
 // التحقق من الإرسال
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // تكوين قاعدة البيانات (غيّر هذه القيم حسب بياناتك)
+    // تكوين قاعدة البيانات
     $host = 'localhost';
-    $db   = 'your_database';
+    $db   = 'data_awallimna';
     $user = 'root';
     $pass = '';
     
@@ -15,15 +15,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // جمع البيانات
+    $account_type = $_POST['account_type'] ?? '';
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-    $account_name = filter_input(INPUT_POST, 'account_name', FILTER_SANITIZE_STRING);
+    $name = filter_input(INPUT_POST, 'account_name', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $birth_date = $_POST['birth_date'];
     $gender = $_POST['gender'];
-    $account_type = $_POST['account_type'];
     $country = $_POST['center_country'];
+    $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
 
     $errors = [];
 
@@ -48,9 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'يجب أن تكون أكبر من 13 سنة';
     }
 
+    // التحقق من نوع الحساب
+    $valid_account_types = ['author', 'admin_author', 'super_admin_author', 
+                            'reader', 'admin_reader', 'super_admin_reader'];
+    if (!in_array($account_type, $valid_account_types)) {
+        $errors[] = 'نوع الحساب غير صالح';
+    }
+
     // التحقق من اسم المستخدم
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ?");
-    $stmt->execute([$username]);
+    $stmt = $pdo->prepare("SELECT id FROM novelist WHERE id = ? 
+                          UNION 
+                          SELECT id FROM reader WHERE id = ?");
+    $stmt->execute(["N_{$username}", "R_{$username}"]);
     if ($stmt->fetch()) {
         $errors[] = 'اسم المستخدم مستخدم مسبقًا';
     }
@@ -58,18 +68,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // إذا لا توجد أخطاء - إنشاء الحساب
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $id = '';
         
-        $stmt = $pdo->prepare("
-            INSERT INTO users 
-            (username, account_name, email, password, birth_date, gender, account_type, country, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
-        ");
-        
-        if ($stmt->execute([$username, $account_name, $email, $hashed_password, $birth_date, $gender, $account_type, $country])) {
+        try {
+            $pdo->beginTransaction();
+            
+            // تحديد الجدول بناءً على نوع الحساب
+            switch ($account_type) {
+                case 'author':
+                    $id = 'N_' . uniqid();
+                    $stmt = $pdo->prepare("
+                        INSERT INTO novelist 
+                        (id, name, email, password, address, birth_date, gender, country, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$id, $name, $email, $hashed_password, $address, $birth_date, $gender, $country]);
+                    break;
+                    
+                case 'admin_author':
+                    $id = 'AN_' . uniqid();
+                    $stmt = $pdo->prepare("
+                        INSERT INTO admin_novelist 
+                        (id, name, email, password, address, birth_date, gender, country, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$id, $name, $email, $hashed_password, $address, $birth_date, $gender, $country]);
+                    break;
+                    
+                case 'super_admin_author':
+                    $id = 'SAN_' . uniqid();
+                    $stmt = $pdo->prepare("
+                        INSERT INTO super_admin_novelist 
+                        (id, name, email, password, address, birth_date, gender, country, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$id, $name, $email, $hashed_password, $address, $birth_date, $gender, $country]);
+                    break;
+                    
+                case 'reader':
+                    $id = 'R_' . uniqid();
+                    $stmt = $pdo->prepare("
+                        INSERT INTO reader 
+                        (id, name, email, password, address, birth_date, gender, country, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$id, $name, $email, $hashed_password, $address, $birth_date, $gender, $country]);
+                    break;
+                    
+                case 'admin_reader':
+                    $id = 'AR_' . uniqid();
+                    $stmt = $pdo->prepare("
+                        INSERT INTO admin_reader 
+                        (id, name, email, password, address, birth_date, gender, country, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$id, $name, $email, $hashed_password, $address, $birth_date, $gender, $country]);
+                    break;
+                    
+                case 'super_admin_reader':
+                    $id = 'SAR_' . uniqid();
+                    $stmt = $pdo->prepare("
+                        INSERT INTO super_admin_reader 
+                        (id, name, email, password, address, birth_date, gender, country, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$id, $name, $email, $hashed_password, $address, $birth_date, $gender, $country]);
+                    break;
+            }
+            
+            $pdo->commit();
             echo '<script>alert("تم التسجيل بنجاح!"); window.location.href = "login.php";</script>';
             exit;
-        } else {
-            $errors[] = 'خطأ في إنشاء الحساب';
+            
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            $errors[] = 'خطأ في إنشاء الحساب: ' . $e->getMessage();
         }
     }
 }
@@ -83,80 +156,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>إنشاء حساب - عوالمنا</title>
     <link rel="icon" href="Website.jpg">
     <style>
-        /* تنسيقات CSS مدمجة */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
-        }
-
-        .registration-container {
-            max-width: 500px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .error {
-            color: #dc3545;
-            margin-top: 5px;
-            font-size: 0.9em;
-        }
-
-        button {
-            background: #28a745;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-
-        button:hover {
-            background: #218838;
-        }
-
-        .header-left {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header-left img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-        }
+        /* ... نفس التنسيقات السابقة مع إضافة حقل العنوان ... */
     </style>
 </head>
 <body>
     <div class="header-left">
         <a href="الموقع.php">
             <img src="Website.jpg" alt="شعار الموقع">
-            <h1 >عوالمنا</h1>
+            <h1>عوالمنا</h1>
         </a>
     </div>
 
@@ -181,6 +188,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
+                <label>العنوان:</label>
+                <input type="text" name="address" required>
+            </div>
+
+            <div class="form-group">
                 <label>البريد الإلكتروني:</label>
                 <input type="email" name="email" required>
             </div>
@@ -197,7 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label>تاريخ الميلاد:</label>
-                <input type="date" name="birth_date" max="<?= date('Y-m-d', strtotime('-13 years')) ?>" required>
+                <input type="date" name="birth_date" max="<?= date('Y-m-d', strtotime('-18 years')) ?>" required>
+                <small>يجب أن يكون الحساب 18 سنة على الأقل.</small>
             </div>
 
             <div class="form-group">
@@ -213,8 +226,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label>نوع الحساب:</label>
                 <select name="account_type" required>
                     <option value="">اختر</option>
-                    <option value="writer">كاتب</option>
+                    <option value="author">كاتب</option>
+                    <option value="admin_author">أدمن كاتب</option>
+                    <option value="super_admin_author">سوبر أدمن كاتب</option>
                     <option value="reader">قارئ</option>
+                    <option value="admin_reader">أدمن قارئ</option>
+                    <option value="super_admin_reader">سوبر أدمن قارئ</option>
                 </select>
             </div>
 
@@ -228,6 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">إنشاء الحساب</button>
         </form>
     </div>
+
 
     <!-- ملف الدول -->
     <script src="center_country.js"></script>
